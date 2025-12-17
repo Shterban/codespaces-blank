@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Королева Красоты</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4db6ac;
+            --primary-dark: #00897b;
+            --bg-color: #b2dfdb;
+            --app-bg: #26a69a;
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --text-color: #ffffff;
+            --accent-yellow: #fdd835;
+            --accent-pink: #f06292;
+            --accent-blue: #4fc3f7;
+            --accent-purple: #ab47bc;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Имитация мобильного устройства */
+        #mobile-app {
+            width: 375px;
+            height: 800px;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- ВЕРХНЯЯ ПАНЕЛЬ РЕСУРСОВ --- */
+        .top-bar {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0,0,0,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        /* Индикатор таймера энергии */
+        .energy-timer {
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 9px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .res-icon {
+            margin-right: 2px;
+        }
+
+        /* --- ШКАЛА ОПЫТА (LEVEL BAR) --- */
+        .level-container {
+            background: rgba(0,0,0,0.2);
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .level-badge {
+            background: var(--accent-yellow);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .xp-bar-bg {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fdd835, #fbc02d);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .level-title {
+            color: white;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: auto;
+        }
+
+        /* --- ЗАГОЛОВОК СТРАНИЦЫ --- */
+        .page-header {
+            text-align: center;
+            padding: 15px 0;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 16px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* --- ОСНОВНАЯ ОБЛАСТЬ КОНТЕНТА --- */
+        #content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 15px 20px 15px;
+            scrollbar-width: none;
+        }
+
+            #content-area::-webkit-scrollbar {
+                display: none;
+            }
+
+        /* --- КАРТОЧКИ И ЭЛЕМЕНТЫ --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            position: relative;
+        }
+
+            /* Блик для акцентирования внимания */
+            .card.highlight {
+                border: 1px solid var(--accent-yellow);
+                animation: pulseBorder 2s infinite;
+            }
+
+        @keyframes pulseBorder {
+            0% {
+                box-shadow: 0 0 0 0 rgba(253, 216, 53, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(253, 216, 53, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(253, 216, 53, 0);
+            }
+        }
+
+        .btn-action {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+
+            .btn-action:active {
+                transform: scale(0.98);
+            }
+
+            .btn-action:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .btn-blue {
+            background: linear-gradient(90deg, #29b6f6, #0288d1);
+            color: white;
+        }
+
+        .btn-pink {
+            background: linear-gradient(90deg, #ec407a, #c2185b);
+            color: white;
+        }
+
+        .btn-teal {
+            background: linear-gradient(90deg, #26a69a, #00695c);
+            color: white;
+        }
+
+        .btn-purple {
+            background: linear-gradient(90deg, #ab47bc, #7b1fa2);
+            color: white;
+        }
+
+        .btn-gold {
+            background: linear-gradient(90deg, #fdd835, #fbc02d);
+            color: #4e342e;
+        }
+
+        /* Прогресс бары */
+        .progress-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            height: 12px;
+            width: 100%;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #a7ffeb, #1de9b6);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* --- НИЖНЯЯ НАВИГАЦИЯ --- */
+        .bottom-nav {
+            background-color: var(--primary-dark);
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            z-index: 20;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 9px;
+            cursor: pointer;
+            width: 16%;
+            text-align: center;
+            transition: color 0.3s;
+        }
+
+            .nav-item.active {
+                color: #ffffff;
+            }
+
+                .nav-item.active i {
+                    color: var(--accent-yellow);
+                    transform: translateY(-2px);
+                    transition: transform 0.3s;
+                }
+
+            .nav-item i {
+                font-size: 18px;
+                margin-bottom: 4px;
+            }
+
+        /* Бэйджик уведомлений на навигации */
+        .badge-notify {
+            position: absolute;
+            top: -5px;
+            right: 15px;
+            background: var(--accent-pink);
+            color: white;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid white;
+        }
+
+        /* Специфичные стили для разделов */
+        .avatar-placeholder {
+            width: 140px;
+            height: 200px;
+            background-color: #e0e0e0;
+            border-radius: 100px 100px 20px 20px;
+            margin: 0 auto 20px;
+            border: 4px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-image: url('https://img.freepik.com/free-vector/fashion-model-sketch-style_23-2147551066.jpg?auto=format&h=500');
+            position: relative;
+        }
+
+        /* Компания */
+        .company-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Участницы компании */
+        .member-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+        }
+
+        .member-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .member-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .role-badge {
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-ceo {
+            background: rgba(253,216,53,0.2);
+            color: var(--accent-yellow);
+            border: 1px solid rgba(253,216,53,0.7);
+        }
+
+        .role-art {
+            background: rgba(240,98,146,0.18);
+            color: var(--accent-pink);
+            border: 1px solid rgba(240,98,146,0.7);
+        }
+
+        .role-top {
+            background: rgba(79,195,247,0.18);
+            color: var(--accent-blue);
+            border: 1px solid rgba(79,195,247,0.7);
+        }
+
+        .role-trainee {
+            background: rgba(171,71,188,0.18);
+            color: var(--accent-purple);
+            border: 1px solid rgba(171,71,188,0.7);
+        }
+
+        .member-status {
+            font-size: 10px;
+            opacity: 0.75;
+        }
+
+        .member-status.online {
+            color: #a5d6a7;
+        }
+
+        .member-status.offline {
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* --- СТИЛИ ДЛЯ ФОРУМА --- */
+        .forum-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .forum-topic {
+            background: var(--card-bg);
+            color: #fff;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.07);
+            transition: background 0.2s;
+        }
+
+            .forum-topic:hover {
+                background: rgba(255,255,255,0.23);
+            }
+
+        .forum-thread-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 15px;
+            color: var(--accent-yellow);
+        }
+
+        .forum-messages {
+            margin: 15px 0 15px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .forum-message {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            border-left: 3px solid transparent;
+        }
+
+            .forum-message.from-me {
+                background: rgba(255, 255, 255, 0.15);
+                border-left: 3px solid var(--accent-pink);
+            }
+
+        .forum-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            box-sizing: border-box;
+        }
+
+        /* КВЕСТЫ */
+        .quest-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .quest-check {
+            color: rgba(255,255,255,0.3);
+            margin-right: 10px;
+        }
+
+            .quest-check.done {
+                color: var(--accent-yellow);
+            }
+
+        /* Анимация уведомлений и модальных окон */
+        .toast {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #00897b, #00695c);
+            width: 80%;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            border: 2px solid var(--accent-yellow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mobile-app">
+        <div id="toast" class="toast">Действие выполнено!</div>
+
+        <div id="modal" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <i class="fas fa-gift" style="font-size: 40px; color: var(--accent-yellow); margin-bottom: 10px;"></i>
+                <h3 id="modalTitle">Ежедневный Бонус!</h3>
+                <p id="modalText">Вы зашли в игру и получили награду.</p>
+                <button class="btn-action btn-gold" onclick="closeModal()">Забрать</button>
+            </div>
+        </div>
+
+        <div class="top-bar">
+            <div class="resource-item"><span class="res-icon">💰</span> <span id="coins">1000</span></div>
+            <div class="resource-item"><span class="res-icon">💎</span> <span id="diamonds">50</span></div>
+            <div class="resource-item">
+                <span class="res-icon">⚡</span> <span id="energy">10/10</span>
+                <div class="energy-timer" id="energyTimer"></div>
+            </div>
+            <div class="resource-item"><span class="res-icon">🌸</span> <span id="flowers">20</span></div>
+        </div>
+
+        <div class="level-container">
+            <div class="level-badge" id="levelNum">1</div>
+            <div class="xp-bar-bg">
+                <div class="xp-bar-fill" id="xpBar"></div>
+            </div>
+            <div class="level-title" id="levelTitle">Новичок</div>
+        </div>
+
+        <div id="content-area">
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab('profile')">
+                <i class="fas fa-crown"></i>
+                <span>Профиль</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('studios')">
+                <i class="fas fa-cut"></i>
+                <span>Студии</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('podium')">
+                <i class="fas fa-trophy"></i>
+                <span>Подиум</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('company')">
+                <i class="fas fa-building"></i>
+                <span>Компания</span>
+                <div class="badge-notify" id="companyBadge" style="display:none;">!</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('travel')">
+                <i class="fas fa-plane"></i>
+                <span>Тревел</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('forum')" id="nav-forum">
+                <i class="fas fa-comments"></i>
+                <span>Форум</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- СОСТОЯНИЕ ИГРЫ ---
+        let state = {
+            coins: 1000,
+            diamonds: 50,
+            energy: 10,
+            maxEnergy: 10,
+            flowers: 20,
+            user: "LadyAqua",
+
+            // Новые параметры прогресса
+            level: 1,
+            xp: 0,
+            maxXp: 100,
+            title: "Новичок",
+            lastLogin: Date.now(),
+
+            // Для восстановления энергии
+            lastEnergyTick: Date.now(),
+
+            company: {
+                // Базовая информация о Модном Доме (компании)
+                name: "Vogue Syndicate",
+                level: 1,            // Уровень Дома
+                reputation: 0,       // Общая репутация (кубки)
+
+                // Экономика
+                treasury: 12500,     // Касса Дома (для управленческих решений)
+                bank: 0,             // Пассивная прибыль, доступная к сбору игроком
+                maxBank: 500,        // Вместимость сейфа
+                corporatePoints: 0,  // Личные корпоративные очки игрока (за вклад)
+
+                // Фокус недели (упрощённый вариант — одна из студий)
+                focus: "marketing",  // marketing | logistics | hr
+
+                // Временный бафф компании (мини-бафф от старших ролей)
+                buff: {
+                    active: false,
+                    endsAt: 0,
+                    multiplier: 1.0
+                },
+
+                // Роли (пока одиночная реализация — игрок рассматривается как Владелица)
+                role: "CEO",         // В будущем может использоваться для ограничений интерфейса
+
+                // Департаменты Модного Дома (по документу — студии/отделы)
+                departments: [
+                    {
+                        id: 'marketing',
+                        name: 'Маркетинг',
+                        level: 12,
+                        progress: 45,
+                        max: 100,
+                        icon: 'fa-bullhorn',
+                        desc: 'Прибыль: 5/мин. Фокус увеличивает выручку от акций.',
+                        income: 5
+                    },
+                    {
+                        id: 'logistics',
+                        name: 'Логистика',
+                        level: 5,
+                        progress: 20,
+                        max: 100,
+                        icon: 'fa-truck',
+                        desc: 'Прибыль: 2/мин. Отвечает за экспедиции и доставку.',
+                        income: 2
+                    },
+                    {
+                        id: 'hr',
+                        name: 'HR Отдел',
+                        level: 8,
+                        progress: 80,
+                        max: 100,
+                        icon: 'fa-users',
+                        desc: 'Прибыль: 3/мин. Нанимает топ-стилистов и стажёров.',
+                        income: 3
+                    }
+                ]
+            },
+
+            // Система компаний/гильдий (надстройка над текущей компанией)
+            companySystem: {
+                hasCompany: true,  // игрок изначально уже в компании
+                myCompanyId: 1
+            },
+
+            // Участницы текущей компании (прототип списка)
+            companyMembers: [
+                { name: "LadyAqua", role: "CEO", title: "Владелица", online: true,  contribCoins: 5200, contribEnergy: 140, corpPoints: 260, reputationGiven: 35, weeksInCompany: 12 },
+                { name: "JuliaStyle", role: "ART", title: "Арт-директор", online: true,  contribCoins: 3800, contribEnergy: 120, corpPoints: 210, reputationGiven: 27, weeksInCompany: 9 },
+                { name: "KatyPop", role: "TOP", title: "Топ-стилист", online: false, contribCoins: 2700, contribEnergy: 90,  corpPoints: 160, reputationGiven: 19, weeksInCompany: 7 },
+                { name: "LenaGreen", role: "TOP", title: "Топ-стилист", online: true,  contribCoins: 3100, contribEnergy: 130, corpPoints: 190, reputationGiven: 22, weeksInCompany: 8 },
+                { name: "MilaStar", role: "TRAINEE", title: "Стажёр", online: false, contribCoins: 600,  contribEnergy: 25,  corpPoints: 40,  reputationGiven: 4,  weeksInCompany: 2 }
+            ],
+
+            // Заявки в компанию (обрабатывают Владелица и Арт-директор)
+            companyApplications: [
+                { name: "AnyaChic", level: 9, note: "Обожаю подиум и активные компании", style: "Подиум" },
+                { name: "VeraBloom", level: 6, note: "Флористика и помощь в ивентах", style: "Флористика" }
+            ],
+
+            // Внутренний чат компании (простые сообщения)
+            companyChat: [
+                { author: "LadyAqua", text: "Добро пожаловать в Vogue Syndicate!", time: "10:05" },
+                { author: "JuliaStyle", text: "Сегодня качаем Маркетинг до 13 уровня 💼", time: "10:07" }
+            ],
+
+            // Лента событий компании
+            companyLog: [
+                { text: "Компания создана: Vogue Syndicate", time: "09:00" },
+                { text: "JuliaStyle повышена до Арт-директора", time: "09:30" },
+                { text: "Запущен мини-бафф компании (+30% к доходу на 10 мин)", time: "09:45" }
+            ],
+
+            // Список популярных компаний (для вступления/просмотра)
+            companyDirectory: [
+                { id: 1, name: "Vogue Syndicate", level: 5, members: 24, reputation: 320, open: true, minLevel: 5, feeDiamonds: 5, description: "Элитный дом для любительниц подиума и люкса." },
+                { id: 2, name: "Floral Queens", level: 3, members: 18, reputation: 190, open: true, minLevel: 3, feeDiamonds: 0, description: "Флористики много не бывает. Букеты, конкурсы и уют." },
+                { id: 3, name: "Travel Muses", level: 4, members: 30, reputation: 260, open: false, minLevel: 6, feeDiamonds: 10, description: "Закрытый клуб путешественниц. Вход по заявкам." }
+            ],
+
+            // Ежедневные квесты
+            quests: [
+                { id: 1, text: "Собрать 1 букет", target: 1, current: 0, reward: 50, done: false },
+                { id: 2, text: "Вложить в компанию", target: 1, current: 0, reward: 100, done: false }
+            ]
+        };
+
+        // Система титулов
+        const TITLES = ["Новичок", "Модница", "Инфлюенсер", "Звезда", "Икона Стиля", "Легенда", "Богиня", "Королева"];
+
+        // --- ДАННЫЕ ФОРУМА (Без изменений) ---
+        let forumDb = [
+            {
+                id: 1, title: "Правила Компании", author: "Admin",
+                messages: [{ author: "Admin", text: "Соблюдайте дресс-код!" }, { author: "JuliaStyle", text: "Принято!" }]
+            },
+            {
+                id: 2, title: "Стратегия на 'День Огурца'", author: "LenaGreen",
+                messages: [{ author: "LenaGreen", text: "Зеленые сумки дают бонус?" }, { author: "LadyAqua", text: "Да, бери изумрудную!" }]
+            },
+            {
+                id: 3, title: "Флудилка", author: "KatyPop",
+                messages: [{ author: "KatyPop", text: "Кто на Мальдивы?" }]
+            }
+        ];
+        let currentForumView = { mode: "list", topicId: null };
+
+        // --- ВСПОМОГАТЕЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+        // Режим отображения раздела "Компания": своя / каталог / профиль участницы
+        let companyViewMode = 'own'; // 'own' | 'browse' | 'member'
+        let selectedCompanyMember = null;
+        let companyChatInput = "";
+
+        // --- ШАБЛОНЫ ---
+        const views = {
+            profile: ``, // Генерируется функцией
+            studios: `
+                         <div class="page-header"><i class="fas fa-leaf"></i> Студия Флористики</div>
+                         <p style="text-align: center; color: rgba(255,255,255,0.8); font-size: 12px;">Собирай букеты и получай опыт!</p>
+
+                         <div class="card">
+                            <div style="display:flex; justify-content:space-between;">
+                                <div><div style="font-weight:bold;">💐 Букет "Морской бриз"</div><div style="font-size:12px; margin-top:5px;">Требует: 5 🌸</div></div>
+                                <div style="text-align:right; font-weight:bold; color: var(--accent-yellow);">+200 💰</div>
+                            </div>
+                            <button class="btn-action btn-blue" onclick="craftBouquet(5, 200, 20)">Собрать (+20 XP)</button>
+                         </div>
+
+                         <div class="card">
+                            <div style="display:flex; justify-content:space-between;">
+                                <div><div style="font-weight:bold;">🌹 Букет "Лагуна"</div><div style="font-size:12px; margin-top:5px;">Требует: 10 🌸</div></div>
+                                <div style="text-align:right; font-weight:bold; color: var(--accent-yellow);">+450 💰</div>
+                            </div>
+                            <button class="btn-action btn-blue" onclick="craftBouquet(10, 450, 40)">Собрать (+40 XP)</button>
+                         </div>
+                    `,
+            podium: `
+                        <div class="page-header"><i class="fas fa-trophy"></i> Подиум</div>
+                        <div class="card" style="text-align:center;">
+                            <h3 style="margin:0 0 10px 0;">Тема: "Вечеринка на Яхте"</h3>
+                            <div style="font-size:12px; opacity:0.8;">До конца: 02:29:15</div>
+                            <button class="btn-action btn-pink" onclick="participatePodium()">Участвовать (⚡ 2)</button>
+                        </div>
+                        <div class="card">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div style="width:40px; height:40px; background:#ddd; border-radius:50%;"></div>
+                                <div style="flex:1;"><div>Участница: <strong>JuliaStyle</strong></div></div>
+                                <button class="btn-teal" style="width: auto; padding: 5px 15px; margin:0;" onclick="showToast('Ваш голос принят! +5 XP'); addXP(5);">Голос</button>
+                            </div>
+                        </div>
+                    `,
+            company: ``, // Генерируется
+            travel: `
+                        <div class="page-header"><i class="fas fa-plane"></i> Путешествия</div>
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div><strong>🌴 Мальдивы</strong><div style="font-size:11px; opacity:0.8;">Открыт новый пляж!</div></div>
+                                <button class="btn-action btn-blue" style="width: auto; padding: 8px 20px; font-size: 12px;" onclick="travel(500)">Лететь (500💰)</button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div><strong>🇫🇷 Ницца</strong><div style="font-size:11px; opacity:0.8;">Неделя моды</div></div>
+                                <button class="btn-action btn-blue" style="width: auto; padding: 8px 20px; font-size: 12px;" onclick="travel(1200)">Лететь (1200💰)</button>
+                            </div>
+                        </div>
+                    `,
+            forum: ''
+        };
+
+        // --- ГЕНЕРАТОРЫ HTML ---
+
+        function getProfileHTML() {
+            return `
+                    <div class="page-header"><i class="fas fa-crown"></i> ${state.title}</div>
+                    <div class="avatar-placeholder"></div>
+                    <div style="text-align: center; color: white; margin-bottom: 20px;">
+                        <div style="font-size: 20px; font-weight: bold;">${state.user}</div>
+                        <div style="font-size: 12px; opacity: 0.8;">"Сияй ярче бриллиантов!"</div>
+                    </div>
+
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:10px; color:var(--accent-yellow);">📋 ЗАДАЧИ НА ДЕНЬ</div>
+                        ${state.quests.map(q => `
+                            <div class="quest-item">
+                                <div style="display:flex; align-items:center;">
+                                    <i class="fas fa-check-circle quest-check ${q.done ? 'done' : ''}"></i>
+                                    <div style="font-size:13px; ${q.done ? 'text-decoration:line-through; opacity:0.6;' : ''}">${q.text}</div>
+                                </div>
+                                <div style="font-size:11px; color:var(--accent-pink);">+${q.reward}💰</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>👗 Гардероб</span>
+                            <button class="btn-blue" style="width: auto; padding: 5px 15px; margin:0;">Открыть</button>
+                        </div>
+                    </div>
+                `;
+        }
+
+        function getCompanyHTML() {
+            // Если игрок не состоит в компании
+            if (!state.companySystem.hasCompany) {
+                return `
+                    <div class="page-header"><i class="fas fa-building"></i> Компании</div>
+
+                    <div class="card">
+                        <div style="font-size:13px; margin-bottom:8px;">Ты ещё не в компании. Присоединись к Модному Дому или создай свой бренд и развивай его вместе с подругами.</div>
+                        <button class="btn-action btn-gold" onclick="createCompany()">Создать компанию</button>
+                    </div>
+
+                    <p style="color: white; font-size: 13px; padding-left: 10px; opacity: 0.9;">ПОПУЛЯРНЫЕ КОМПАНИИ</p>
+
+                    ${state.companyDirectory.map(c => `
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:bold; font-size:15px;">${c.name}</div>
+                                    <div style="font-size:11px; opacity:0.8;">Ур. ${c.level} • ${c.members} участниц • Репутация ${c.reputation}</div>
+                                    <div style="font-size:11px; opacity:0.8; margin-top:4px;">${c.description}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:10px; margin-bottom:6px; color:${c.open ? '#a5d6a7' : '#ffcc80'};">
+                                        ${c.open ? 'Открытый набор' : 'Только по заявке'}
+                                    </div>
+                                    <button class="btn-action btn-blue" style="width:auto; padding:8px 14px; font-size:11px;" onclick="joinCompany(${c.id})">
+                                        Вступить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}`;
+            }
+
+            // Просмотр своей компании или каталога при уже существующей принадлежности
+            if (companyViewMode === 'browse') {
+                return `
+                    <div class="page-header"><i class="fas fa-building"></i> Каталог компаний</div>
+
+                    <div class="card">
+                        <div style="font-size:13px; margin-bottom:8px;">Ты состоишь в компании <strong>${state.company.name}</strong>, но можешь посмотреть другие дома и при желании сменить команду.</div>
+                        <button class="btn-action btn-teal" onclick="showMyCompany()">Моя компания</button>
+                    </div>
+
+                    ${state.companyDirectory.map(c => `
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:bold; font-size:15px;">${c.name}</div>
+                                    <div style="font-size:11px; opacity:0.8;">Ур. ${c.level} • ${c.members} участниц • Репутация ${c.reputation}</div>
+                                    <div style="font-size:11px; opacity:0.8; margin-top:4px;">${c.description}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:10px; margin-bottom:6px; color:${c.open ? '#a5d6a7' : '#ffcc80'};">
+                                        ${c.open ? 'Открытый набор' : 'Только по заявке'}
+                                    </div>
+                                    <button class="btn-action btn-blue" style="width:auto; padding:8px 14px; font-size:11px;" onclick="changeCompany(${c.id})">
+                                        Перейти
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}`;
+            }
+
+            // Профиль участницы компании
+            if (companyViewMode === 'member' && selectedCompanyMember) {
+                const m = selectedCompanyMember;
+                const initials = m.name.slice(0, 2).toUpperCase();
+                const roleBadgeClass =
+                    m.role === 'CEO' ? 'role-ceo' :
+                    m.role === 'ART' ? 'role-art' :
+                    m.role === 'TOP' ? 'role-top' : 'role-trainee';
+                const statusClass = m.online ? 'online' : 'offline';
+                const statusText = m.online ? 'Сейчас онлайн' : 'Не в сети';
+                const isMe = m.name === state.user;
+
+                // Простейший рейтинг по вкладу монет + энергии
+                const sorted = [...state.companyMembers].sort((a, b) => (b.contribCoins + b.contribEnergy * 5) - (a.contribCoins + a.contribEnergy * 5));
+                const rank = sorted.findIndex(x => x.name === m.name) + 1;
+
+                // Описание роли
+                let roleNote = '';
+                if (m.role === 'CEO') {
+                    roleNote = 'Владелица решает стратегию Дома, утверждает апгрейды департаментов и распределяет ресурсы.';
+                } else if (m.role === 'ART') {
+                    roleNote = 'Арт-директор помогает с приёмом новых участниц и следит за стилем компании.';
+                } else if (m.role === 'TOP') {
+                    roleNote = 'Топ-стилист — одна из ключевых участниц, стабильно приносит в компанию монеты и репутацию.';
+                } else {
+                    roleNote = 'Стажёр проходит испытательный срок: учится механикам игры и вносит первые вклады в Дом.';
+                }
+
+                // Карточка управления (только для Владелицы и только не для себя)
+                let manageCardHtml = '';
+                if (state.company.role === 'CEO' && !isMe) {
+                    manageCardHtml =
+                        `<div class="card">
+                            <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Управление участницей</div>
+                            <p style="font-size:11px; opacity:0.85; margin-bottom:8px;">Измени её роль или исключи из компании. Эти действия влияют на атмосферу Дома — используй их аккуратно.</p>
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <button class="btn-action btn-teal" style="padding:8px 10px; font-size:12px;" onclick="promoteMember('${m.name}')">Повысить роль</button>
+                                <button class="btn-action btn-blue" style="padding:8px 10px; font-size:12px;" onclick="demoteMember('${m.name}')">Понизить роль</button>
+                                <button class="btn-action btn-gold" style="padding:8px 10px; font-size:12px;" onclick="transferOwnership('${m.name}')">Сделать Владелицей</button>
+                                <button class="btn-action btn-pink" style="padding:8px 10px; font-size:12px;" onclick="kickMember('${m.name}')">Исключить из компании</button>
+                            </div>
+                        </div>`;
+                }
+
+                return `
+                    <div class="page-header"><i class="fas fa-user"></i> Профиль участницы</div>
+
+                    <div class="card" style="text-align:center;">
+                        <div class="member-avatar" style="width:60px;height:60px;font-size:20px;margin:0 auto 10px auto;background:rgba(255,255,255,0.9);">
+                            <span style="color:${m.role === 'CEO' ? '#fdd835' : '#00897b'};">${initials}</span>
+                        </div>
+                        <div style="font-size:18px; font-weight:bold; margin-bottom:4px;">
+                            ${m.name} ${isMe ? '<span style="font-size:11px; opacity:0.7;">(это вы)</span>' : ''}
+                        </div>
+                        <div style="margin-bottom:6px;">
+                            <span class="role-badge ${roleBadgeClass}">
+                                ${m.role === 'CEO' ? 'Владелица (CEO)' :
+                                   m.role === 'ART' ? 'Арт-директор' :
+                                   m.role === 'TOP' ? 'Топ-стилист' : 'Стажёр'}
+                            </span>
+                        </div>
+                        <div class="member-status ${statusClass}" style="margin-bottom:10px;">${statusText}</div>
+                        <div style="font-size:11px; opacity:0.8;">В компании: ${m.weeksInCompany} нед.</div>
+                        <div style="font-size:11px; opacity:0.8;">Рейтинг вклада: #${rank} в компании</div>
+                    </div>
+
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Вклад в компанию</div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:13px;">
+                            <span>Инвестиции монетами</span>
+                            <span style="font-weight:bold;">${m.contribCoins.toLocaleString('ru-RU')} 💰</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:13px;">
+                            <span>Работа энергией</span>
+                            <span style="font-weight:bold;">${m.contribEnergy} ⚡</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:13px;">
+                            <span>Корпоративные очки</span>
+                            <span style="font-weight:bold; color:var(--accent-pink);">${m.corpPoints} ◎</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size:13px;">
+                            <span>Дано репутации Дому</span>
+                            <span style="font-weight:bold; color:var(--accent-yellow);">+${m.reputationGiven}</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Заметки о роли</div>
+                        <div style="font-size:12px; opacity:0.9;">${roleNote}</div>
+                    </div>
+
+                    ${manageCardHtml}
+
+                    <div style="display:flex; gap:10px; margin:10px 0 15px 0;">
+                        <button class="btn-action btn-blue" style="flex:1; padding:10px 8px; font-size:12px;" onclick="backToCompanyFromMember()">Назад к компании</button>
+                    </div>
+                `;
+            }
+
+            const totalIncome = state.company.departments.reduce((acc, d) => acc + d.income, 0);
+            const focusNames = {
+                marketing: "Фокус недели: Маркетинг",
+                logistics: "Фокус недели: Логистика",
+                hr: "Фокус недели: HR Отдел"
+            };
+            const totalMembers = state.companyMembers.length;
+            const onlineMembers = state.companyMembers.filter(m => m.online).length;
+            const ceoCount = state.companyMembers.filter(m => m.role === 'CEO').length;
+            const artCount = state.companyMembers.filter(m => m.role === 'ART').length;
+            const topCount = state.companyMembers.filter(m => m.role === 'TOP').length;
+            const traineeCount = state.companyMembers.filter(m => m.role === 'TRAINEE').length;
+            const canReviewApplications = state.company.role === 'CEO' || state.company.role === 'ART';
+
+            // Вспомогательная функция для времени (hh:mm)
+            function getNowTimeString() {
+                const d = new Date();
+                const h = String(d.getHours()).padStart(2, '0');
+                const m = String(d.getMinutes()).padStart(2, '0');
+                return `${h}:${m}`;
+            }
+
+            // Просмотр своей компании или каталога при уже существующей принадлежности
+            if (companyViewMode === 'browse') {
+                return `
+                    <div class="page-header"><i class="fas fa-building"></i> Каталог компаний</div>
+
+                    <div class="card">
+                        <div style="font-size:13px; margin-bottom:8px;">Ты состоишь в компании <strong>${state.company.name}</strong>, но можешь посмотреть другие дома и при желании сменить команду.</div>
+                        <button class="btn-action btn-teal" onclick="showMyCompany()">Моя компания</button>
+                    </div>
+
+                    ${state.companyDirectory.map(c => `
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div style="font-weight:bold; font-size:15px;">${c.name}</div>
+                                    <div style="font-size:11px; opacity:0.8;">Ур. ${c.level} • ${c.members} участниц • Репутация ${c.reputation}</div>
+                                    <div style="font-size:11px; opacity:0.8; margin-top:4px;">${c.description}</div>
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:10px; margin-bottom:6px; color:${c.open ? '#a5d6a7' : '#ffcc80'};">
+                                        ${c.open ? 'Открытый набор' : 'Только по заявке'}
+                                    </div>
+                                    <button class="btn-action btn-blue" style="width:auto; padding:8px 14px; font-size:11px;" onclick="changeCompany(${c.id})">
+                                        Перейти
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}`;
+            }
+
+            return `
+                    <div class="page-header"><i class="fas fa-building"></i> Модный Дом</div>
+
+                    <!-- Общая информация о Доме -->
+                    <div class="card" style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.25) 100%);">
+                        <div class="company-header">
+                            <div>
+                                <div style="font-size: 18px; font-weight: bold;">${state.company.name}</div>
+                                <div style="font-size: 11px; opacity: 0.8;">Ур. Дома: ${state.company.level} • Репутация: ${state.company.reputation} ⭐</div>
+                                <div style="font-size: 11px; opacity: 0.8; margin-top:3px;">${focusNames[state.company.focus] || ''}</div>
+                            </div>
+                            <div class="company-logo">V</div>
+                        </div>
+
+                        <div style="margin-top:8px; display:flex; gap:6px;">
+                            <button class="btn-blue" style="flex:1; font-size:11px; padding:6px 8px; border-radius:16px; border:none; cursor:pointer;" onclick="showCompanyDirectory()">Другие компании</button>
+                            <button class="btn-teal" style="flex:1; font-size:11px; padding:6px 8px; border-radius:16px; border:none; cursor:pointer;" onclick="leaveCompany()">Выйти</button>
+                            <button class="btn-pink" style="flex:1; font-size:11px; padding:6px 8px; border-radius:16px; border:none; cursor:pointer;" onclick="disbandCompany()">Распустить</button>
+                        </div>
+
+                        <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                            <div>
+                                <div style="font-size:10px; opacity:0.7;">Касса Дома</div>
+                                <div style="font-size:14px; font-weight:bold; color:var(--accent-yellow);">${state.company.treasury} 💰</div>
+                            </div>
+                            <div>
+                                <div style="font-size:10px; opacity:0.7;">Мои корп. очки</div>
+                                <div style="font-size:14px; font-weight:bold; color:var(--accent-pink);">${state.company.corporatePoints} ◎</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Сейф и пассивный доход -->
+                    <div class="card ${state.company.bank >= state.company.maxBank * 0.8 ? 'highlight' : ''}" style="background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 100%);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-size:10px; opacity:0.7;">В сейфе (прибыль Дома):</div>
+                                <div style="font-size:20px; font-weight:bold; color:var(--accent-yellow);">${Math.floor(state.company.bank)} / ${state.company.maxBank} 💰</div>
+                                <div style="font-size:11px; opacity:0.8; margin-top:2px;">Пассивный доход: ${totalIncome * 10} 💰/мин</div>
+                            </div>
+                            <button class="btn-gold" style="padding:8px 20px; border-radius:20px; border:none; font-weight:bold; cursor:pointer;" onclick="collectBank()">Забрать</button>
+                        </div>
+                    </div>
+
+                    <!-- Блок про роли и мотивацию (упрощённо, для соло) -->
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Роль в Доме</div>
+                        <div style="font-size:13px; margin-bottom:4px;">Вы: <strong>Владелица (CEO)</strong></div>
+                        <div style="font-size:11px; opacity:0.8;">Вы решаете, куда направить ресурсы: прокачивать отделы или копить в кассе. Вклад в отделы приносит <span style="color:var(--accent-pink);">корпоративные очки</span>, которые можно будет тратить в будущем магазине Дома.</div>
+                    </div>
+
+                    <!-- Обзор состава компании -->
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Состав компании</div>
+                        <div style="font-size:12px; margin-bottom:4px;">Всего участниц: <strong>${totalMembers}</strong> (онлайн: <span style="color:#a5d6a7;">${onlineMembers}</span>)</div>
+                        <div style="font-size:11px; opacity:0.85;">
+                            CEO: <strong>${ceoCount}</strong> •
+                            Арт-директоров: <strong>${artCount}</strong> •
+                            Топ-стилистов: <strong>${topCount}</strong> •
+                            Стажёров: <strong>${traineeCount}</strong>
+                        </div>
+                    </div>
+
+                    <!-- Участницы компании -->
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Участницы компании</div>
+                        <ul class="member-list">
+                            ${state.companyMembers.map(m => {
+                                const initials = m.name.slice(0, 2).toUpperCase();
+                                const roleClass =
+                                    m.role === 'CEO' ? 'role-ceo' :
+                                    m.role === 'ART' ? 'role-art' :
+                                    m.role === 'TOP' ? 'role-top' : 'role-trainee';
+                                const statusClass = m.online ? 'online' : 'offline';
+                                const statusText = m.online ? 'онлайн' : 'офлайн';
+                                const isMe = m.name === state.user;
+                                return `
+                                    <li class="member-item" onclick="viewMemberProfile('${m.name}')">
+                                        <div class="member-main">
+                                            <div class="member-avatar">${initials}</div>
+                                            <div>
+                                                <div style="font-size:12px;">
+                                                    ${m.name}
+                                                    ${isMe ? '<span style="font-size:10px; opacity:0.7;">(вы)</span>' : ''}
+                                                </div>
+                                                <div class="member-status ${statusClass}">${m.title}</div>
+                                            </div>
+                                        </div>
+                                        <div style="text-align:right;">
+                                            <div class="role-badge ${roleClass}">
+                                                ${m.role === 'CEO' ? 'CEO' :
+                                                   m.role === 'ART' ? 'АРТ' :
+                                                   m.role === 'TOP' ? 'ТОП' : 'СТАЖЁР'}
+                                            </div>
+                                            <div class="member-status ${statusClass}" style="margin-top:3px;">${statusText}</div>
+                                        </div>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ul>
+                    </div>
+
+                    <!-- Заявки в компанию (видят только Владелица и Арт-директор) -->
+                    ${canReviewApplications && state.companyApplications && state.companyApplications.length > 0 ? `
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Заявки в компанию</div>
+                        ${state.companyApplications.map(app => `
+                            <div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <div style="font-size:13px; font-weight:bold;">${app.name}</div>
+                                        <div style="font-size:11px; opacity:0.8;">Уровень ${app.level} • Фокус: ${app.style}</div>
+                                        <div style="font-size:11px; opacity:0.8; margin-top:3px;">"${app.note}"</div>
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; gap:4px;">
+                                        <button class="btn-teal" style="padding:4px 10px; font-size:11px; border-radius:12px; border:none; cursor:pointer;" onclick="acceptApplication('${app.name}')">Принять</button>
+                                        <button class="btn-pink" style="padding:4px 10px; font-size:11px; border-radius:12px; border:none; cursor:pointer;" onclick="rejectApplication('${app.name}')">Отклонить</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+
+                    <!-- Мини-бафф компании (для Топ-стилистов и выше) -->
+                    ${(state.company.role === 'TOP' || state.company.role === 'ART' || state.company.role === 'CEO') ? `
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Мини-бафф компании</div>
+                        ${state.company.buff && state.company.buff.active
+                            ? (() => {
+                                const msLeft = Math.max(0, state.company.buff.endsAt - Date.now());
+                                const totalSeconds = Math.floor(msLeft / 1000);
+                                const minutes = Math.floor(totalSeconds / 60);
+                                const seconds = totalSeconds % 60;
+                                return `
+                                    <div style="font-size:12px; opacity:0.9; margin-bottom:6px;">
+                                        Активен бонус к доходу <strong>+${Math.round((state.company.buff.multiplier - 1) * 100)}%</strong>.
+                                    </div>
+                                    <div style="font-size:11px; opacity:0.8; margin-bottom:8px;">
+                                        Осталось: ${minutes} мин ${seconds} с
+                                    </div>
+                                    <button class="btn-action btn-gold" style="font-size:12px;" disabled>Бафф запущен</button>
+                                `;
+                            })()
+                            : `
+                                <div style="font-size:12px; opacity:0.9; margin-bottom:6px;">
+                                    Запусти временный бонус к доходу компании. Стоимость: <strong>2 ⚡</strong> и <strong>15 ◎</strong>.
+                                </div>
+                                <div style="font-size:11px; opacity:0.8; margin-bottom:8px;">
+                                    Бафф даёт <strong>+30% к пассивному доходу</strong> на 10 минут.
+                                </div>
+                                <button class="btn-action btn-gold" style="font-size:12px;" onclick="launchMiniBuff()">Запустить бафф</button>
+                            `}
+                    </div>
+                    ` : ''}
+
+                    <!-- Лента событий компании -->
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Лента компании</div>
+                        <div style="max-height:120px; overflow-y:auto; font-size:11px;">
+                            ${(state.companyLog && state.companyLog.length
+                                ? state.companyLog.slice().reverse().map(item => `
+                                    <div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
+                                        <span style="opacity:0.6;">[${item.time}]</span>
+                                        <span style="margin-left:4px;">${item.text}</span>
+                                    </div>
+                                `).join('')
+                                : '<div style="opacity:0.7;">Пока нет событий. Совершайте действия, чтобы заполнить ленту.</div>'
+                            )}
+                        </div>
+                    </div>
+
+                    <!-- Внутренний чат компании -->
+                    <div class="card">
+                        <div style="font-size:12px; font-weight:bold; margin-bottom:6px; color:var(--accent-yellow);">Чат компании</div>
+                        <div style="max-height:120px; overflow-y:auto; font-size:12px; margin-bottom:8px;">
+                            ${(state.companyChat && state.companyChat.length
+                                ? state.companyChat.slice(-20).map(msg => `
+                                    <div style="margin-bottom:4px;">
+                                        <span style="opacity:0.6; font-size:10px;">[${msg.time}]</span>
+                                        <span style="font-weight:bold; margin-left:4px;">${msg.author}:</span>
+                                        <span style="margin-left:4px;">${msg.text}</span>
+                                    </div>
+                                `).join('')
+                                : '<div style="opacity:0.7;">Напишите первое сообщение в чате компании.</div>'
+                            )}
+                        </div>
+                        <div style="display:flex; gap:4px;">
+                            <input id="companyChatInput" type="text" placeholder="Написать сообщение..." style="flex:1; padding:6px 8px; border-radius:8px; border:none; font-size:11px;">
+                            <button class="btn-action btn-blue" style="width:70px; padding:6px 8px; font-size:11px;" onclick="sendCompanyChat()">Send</button>
+                        </div>
+                    </div>
+
+                    <p style="color: white; font-size: 13px; padding-left: 10px; opacity: 0.9;">ДЕПАРТАМЕНТЫ (Общий вклад повышает доход и репутацию)</p>
+
+                    ${state.company.departments.map(dept => `
+                    <div class="card">
+                        <div style="display:flex; align-items:center; margin-bottom: 5px;">
+                            <i class="fas ${dept.icon} dept-icon" style="font-size:18px; margin-right:10px; width:25px; text-align:center;"></i>
+                            <div style="flex:1;">
+                                <div style="display:flex; justify-content:space-between;">
+                                    <strong>${dept.name}</strong>
+                                    <span style="font-size:12px;">Ур. ${dept.level}</span>
+                                </div>
+                                <div style="font-size:10px; opacity:0.7;">${dept.desc}</div>
+                                <div style="font-size:10px; opacity:0.8; margin-top:3px;">Доход отдела: ${dept.income} 💰/мин</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${dept.progress}%"></div>
+                        </div>
+
+                        <div style="display:flex; gap: 10px;">
+                            <button class="btn-blue" style="width:50%; font-size: 11px; padding: 8px; border-radius: 8px; border:none; cursor:pointer;" onclick="investCompany('${dept.id}', 100, 'coins')">Вложить 100 💰</button>
+                            <button class="btn-teal" style="width:50%; font-size: 11px; padding: 8px; border-radius: 8px; border:none; cursor:pointer;" onclick="investCompany('${dept.id}', 1, 'energy')">Работать (1 ⚡)</button>
+                        </div>
+                    </div>
+                    `).join('')}`;
+        }
+
+        // --- ОСНОВНАЯ ЛОГИКА ---
+
+        // Таймер игры (1 тик в секунду)
+        setInterval(() => {
+            // 1. Восстановление энергии
+            if (state.energy < state.maxEnergy) {
+                let now = Date.now();
+                let diff = now - state.lastEnergyTick;
+                let secondsLeft = 60 - Math.floor(diff / 1000); // 60 секунд на 1 энергию
+
+                if (diff >= 60000) { // Прошла минута
+                    state.energy++;
+                    state.lastEnergyTick = now;
+                    updateUI();
+                } else {
+                    document.getElementById('energyTimer').innerText = secondsLeft + "с";
+                }
+            } else {
+                document.getElementById('energyTimer').innerText = "";
+                state.lastEnergyTick = Date.now();
+            }
+
+            // 2. Пассивный доход компании (Модного Дома)
+            if (state.company.bank < state.company.maxBank) {
+                // Сумма дохода всех отделов
+                let totalIncome = state.company.departments.reduce((acc, d) => acc + d.income, 0);
+                // Небольшой бонус к доходу за уровень Дома
+                totalIncome += state.company.level;
+
+                // Модификатор от активного баффа компании
+                let multiplier = 1;
+                if (state.company.buff && state.company.buff.active) {
+                    const now = Date.now();
+                    if (now >= state.company.buff.endsAt) {
+                        state.company.buff.active = false;
+                        state.company.buff.multiplier = 1.0;
+                    } else {
+                        multiplier = state.company.buff.multiplier;
+                    }
+                }
+
+                // Делим на 6, так как тик раз в секунду, а доход указан "условный"
+                state.company.bank += (totalIncome * multiplier / 6);
+                if (state.company.bank > state.company.maxBank) state.company.bank = state.company.maxBank;
+
+                // Уведомление на табе если банк почти полон
+                const badge = document.getElementById('companyBadge');
+                if (state.company.bank >= state.company.maxBank * 0.8) {
+                    badge.style.display = "flex";
+                } else {
+                    badge.style.display = "none";
+                }
+            }
+        }, 1000);
+
+        function updateUI() {
+            document.getElementById('coins').innerText = Math.floor(state.coins);
+            document.getElementById('diamonds').innerText = state.diamonds;
+            document.getElementById('energy').innerText = state.energy + "/" + state.maxEnergy;
+            document.getElementById('flowers').innerText = state.flowers;
+
+            // Обновление XP
+            let xpPercent = (state.xp / state.maxXp) * 100;
+            document.getElementById('xpBar').style.width = xpPercent + "%";
+            document.getElementById('levelNum').innerText = state.level;
+            document.getElementById('levelTitle').innerText = state.title;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.nav-item[onclick="switchTab('${tabName}')"]`).classList.add('active');
+
+            const container = document.getElementById('content-area');
+            if (tabName === 'profile') {
+                container.innerHTML = getProfileHTML();
+            } else if (tabName === 'company') {
+                container.innerHTML = getCompanyHTML();
+            } else if (tabName === 'forum') {
+                renderForum();
+            } else {
+                container.innerHTML = views[tabName];
+            }
+        }
+
+        // --- ИГРОВЫЕ ДЕЙСТВИЯ ---
+
+        function addXP(amount) {
+            state.xp += amount;
+            if (state.xp >= state.maxXp) {
+                state.xp -= state.maxXp;
+                state.level++;
+                state.maxXp = Math.floor(state.maxXp * 1.5);
+                state.diamonds += 5; // Награда за уровень
+                state.energy = state.maxEnergy; // Полное восстановление
+
+                // Обновление титула
+                if (state.level <= TITLES.length) {
+                    state.title = TITLES[state.level - 1];
+                }
+
+                showModal("Повышение Уровня!", `Вы достигли уровня ${state.level}!<br>Титул: ${state.title}<br>Награда: +5 💎 и Полная Энергия!`);
+            }
+            updateUI();
+        }
+
+        function updateQuest(id, amount) {
+            let q = state.quests.find(x => x.id === id);
+            if (q && !q.done) {
+                q.current += amount;
+                if (q.current >= q.target) {
+                    q.done = true;
+                    state.coins += q.reward;
+                    showToast(`Квест выполнен! +${q.reward} монет`);
+                }
+            }
+        }
+
+        // Студия
+        window.craftBouquet = function (costFlowers, rewardCoins, xpReward) {
+            if (state.flowers >= costFlowers) {
+                state.flowers -= costFlowers;
+                state.coins += rewardCoins;
+                showToast(`Букет собран! +${rewardCoins} монет`);
+                addXP(xpReward);
+                updateQuest(1, 1); // Квест на букеты
+            } else {
+                showToast("Недостаточно цветов!");
+            }
+        }
+
+        // Подиум
+        window.participatePodium = function () {
+            if (state.energy >= 2) {
+                state.energy -= 2;
+                showToast("Вы подали заявку! Результаты через 2ч.");
+                addXP(50); // Много опыта за конкурс
+            } else {
+                showToast("Нужно 2 энергии!");
+            }
+            updateUI();
+        }
+
+        // Путешествия
+        window.travel = function (cost) {
+            if (state.coins >= cost) {
+                state.coins -= cost;
+                state.energy = Math.min(state.energy + 5, state.maxEnergy); // Восстанавливает 5 энергии
+                showToast("Отличное путешествие! Энергия восстановлена.");
+                addXP(100);
+                updateUI();
+            } else {
+                showToast("Недостаточно монет!");
+            }
+        }
+
+        // Компания: Сбор денег из сейфа
+        window.collectBank = function () {
+            if (state.company.bank < 1) return;
+            let amount = Math.floor(state.company.bank);
+            state.coins += amount;
+            state.company.bank = 0;
+
+            // Небольшое увеличение репутации за активное управление Домом
+            state.company.reputation += Math.floor(amount / 200);
+            if (state.company.reputation >= 100) {
+                state.company.reputation -= 100;
+                state.company.level++;
+                showToast(`Модный Дом повысил уровень! Теперь ур. ${state.company.level}`);
+            } else {
+                showToast(`Собрано ${amount} монет прибыли!`);
+            }
+            updateUI();
+            switchTab('company'); // Перерисовка
+        }
+
+        // Компания: просмотр каталога и управление членством
+        window.showCompanyDirectory = function () {
+            companyViewMode = 'browse';
+            switchTab('company');
+        }
+
+        window.showMyCompany = function () {
+            if (!state.companySystem.hasCompany) {
+                showToast("Вы не состоите в компании");
+                return;
+            }
+            companyViewMode = 'own';
+            switchTab('company');
+        }
+
+        window.createCompany = function () {
+            if (state.companySystem.hasCompany) {
+                showToast("Вы уже состоите в компании");
+                return;
+            }
+            // Требования к созданию компании
+            const requiredLevel = 5;
+            const requiredCoins = 2000;
+            const requiredDiamonds = 10;
+
+            if (state.level < requiredLevel) {
+                showToast(`Для создания компании нужен уровень ${requiredLevel}+`);
+                return;
+            }
+            if (state.coins < requiredCoins || state.diamonds < requiredDiamonds) {
+                showToast(`Нужно ${requiredCoins} монет и ${requiredDiamonds} 💎 для создания компании`);
+                return;
+            }
+
+            state.coins -= requiredCoins;
+            state.diamonds -= requiredDiamonds;
+            state.company = {
+                name: "Мой Модный Дом",
+                level: 1,
+                reputation: 0,
+                treasury: 0,
+                bank: 0,
+                maxBank: 500,
+                corporatePoints: 0,
+                focus: "marketing",
+                role: "CEO",
+                departments: JSON.parse(JSON.stringify([
+                    { id: 'marketing', name: 'Маркетинг', level: 1, progress: 0, max: 100, icon: 'fa-bullhorn', desc: 'Прибыль: 1/мин. Фокус увеличивает выручку от акций.', income: 1 },
+                    { id: 'logistics', name: 'Логистика', level: 1, progress: 0, max: 100, icon: 'fa-truck', desc: 'Прибыль: 1/мин. Отвечает за экспедиции и доставку.', income: 1 },
+                    { id: 'hr', name: 'HR Отдел', level: 1, progress: 0, max: 100, icon: 'fa-users', desc: 'Прибыль: 1/мин. Нанимает топ-стилистов и стажёров.', income: 1 }
+                ]))
+            };
+            state.companySystem.hasCompany = true;
+            state.companySystem.myCompanyId = 999;
+            companyViewMode = 'own';
+            showToast("Компания создана!");
+            if (!state.companyLog) state.companyLog = [];
+            const d = new Date();
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            state.companyLog.push({ text: `Компания создана игроком ${state.user}`, time: `${h}:${m}` });
+            switchTab('company');
+        }
+
+        window.leaveCompany = function () {
+            if (!state.companySystem.hasCompany) return;
+            showToast("Вы вышли из компании");
+            state.companySystem.hasCompany = false;
+            state.companySystem.myCompanyId = null;
+            companyViewMode = 'own';
+            switchTab('company');
+        }
+
+        window.disbandCompany = function () {
+            if (!state.companySystem.hasCompany) return;
+            if (state.company.role !== 'CEO') {
+                showToast("Распустить может только Владелица");
+                return;
+            }
+            showToast("Компания распущена");
+            state.companySystem.hasCompany = false;
+            state.companySystem.myCompanyId = null;
+            companyViewMode = 'own';
+            switchTab('company');
+        }
+
+        window.joinCompany = function (id) {
+            const c = state.companyDirectory.find(x => x.id === id);
+            if (!c) return;
+
+            // Требования к вступлению
+            const minLevel = c.minLevel || 1;
+            const feeDiamonds = c.feeDiamonds || 0;
+
+            if (state.level < minLevel) {
+                showToast(`Для вступления в ${c.name} нужен уровень ${minLevel}+`);
+                return;
+            }
+            if (feeDiamonds > 0 && state.diamonds < feeDiamonds) {
+                showToast(`Для вступления нужно ${feeDiamonds} 💎`);
+                return;
+            }
+
+            if (!c.open) {
+                // Закрытая компания — только заявка
+                if (!state.companyApplications.find(a => a.name === state.user)) {
+                    state.companyApplications.push({
+                        name: state.user,
+                        level: state.level,
+                        note: "Хочу вступить в вашу компанию",
+                        style: "Смешанный"
+                    });
+                }
+                showToast("Заявка отправлена. Ожидайте решения руководства.");
+                return;
+            }
+
+            // Открытая компания — вступление сразу
+            if (feeDiamonds > 0) {
+                state.diamonds -= feeDiamonds;
+            }
+            state.company.name = c.name;
+            state.company.level = c.level;
+            state.company.reputation = c.reputation;
+            state.company.role = "Member";
+            state.companySystem.hasCompany = true;
+            state.companySystem.myCompanyId = id;
+            companyViewMode = 'own';
+            showToast(`Вы вступили в компанию ${c.name}`);
+            switchTab('company');
+        }
+
+        window.changeCompany = function (id) {
+            // Используется из режима просмотра каталога, когда уже в компании
+            window.joinCompany(id);
+        }
+
+        // Внутренний чат компании
+        window.sendCompanyChat = function () {
+            const input = document.getElementById('companyChatInput');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) {
+                showToast("Сообщение пустое");
+                return;
+            }
+            if (!state.companyChat) state.companyChat = [];
+
+            const d = new Date();
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            const time = `${h}:${m}`;
+
+            state.companyChat.push({
+                author: state.user,
+                text,
+                time
+            });
+            if (state.companyChat.length > 100) {
+                state.companyChat.shift();
+            }
+
+            input.value = "";
+            switchTab('company');
+        }
+
+        // Профиль участницы компании
+        window.viewMemberProfile = function (name) {
+            const m = state.companyMembers.find(x => x.name === name);
+            if (!m) {
+                showToast("Участница не найдена");
+                return;
+            }
+            selectedCompanyMember = m;
+            companyViewMode = 'member';
+            switchTab('company');
+        }
+
+        window.backToCompanyFromMember = function () {
+            companyViewMode = 'own';
+            selectedCompanyMember = null;
+            switchTab('company');
+        }
+
+        // Запуск мини-баффа компании (для Топ-стилистов и выше)
+        window.launchMiniBuff = function () {
+            const role = state.company.role;
+            if (!(role === 'TOP' || role === 'ART' || role === 'CEO')) {
+                showToast("Недостаточно прав для запуска баффа");
+                return;
+            }
+            if (state.company.buff && state.company.buff.active) {
+                showToast("Бафф уже активен");
+                return;
+            }
+            if (state.energy < 2) {
+                showToast("Нужно 2 энергии для запуска баффа");
+                return;
+            }
+            if (state.company.corporatePoints < 15) {
+                showToast("Недостаточно корпоративных очков (нужно 15)");
+                return;
+            }
+
+            state.energy -= 2;
+            state.company.corporatePoints -= 15;
+            state.company.buff.active = true;
+            state.company.buff.multiplier = 1.3;
+            state.company.buff.endsAt = Date.now() + 10 * 60 * 1000; // 10 минут
+
+            showToast("Мини-бафф компании запущен на 10 минут!");
+            updateUI();
+            switchTab('company');
+        }
+
+        // Управление участницами (для Владелицы)
+        const MAX_ART_DIRECTORS = 1;
+        const MAX_TOP_STYLISTS = 3;
+
+        function findMember(name) {
+            return state.companyMembers.find(m => m.name === name);
+        }
+
+        function countRole(role) {
+            return state.companyMembers.filter(m => m.role === role).length;
+        }
+
+        window.promoteMember = function (name) {
+            if (state.company.role !== 'CEO') {
+                showToast("Только Владелица может менять роли");
+                return;
+            }
+            const m = findMember(name);
+            if (!m) {
+                showToast("Участница не найдена");
+                return;
+            }
+            if (m.role === 'CEO') {
+                showToast("Это уже Владелица");
+                return;
+            }
+            if (m.role === 'TRAINEE') {
+                if (countRole('TOP') >= MAX_TOP_STYLISTS) {
+                    showToast("Достигнут лимит Топ-стилистов");
+                    viewMemberProfile(name);
+                    return;
+                }
+                m.role = 'TOP';
+                m.title = 'Топ-стилист';
+            } else if (m.role === 'TOP') {
+                if (countRole('ART') >= MAX_ART_DIRECTORS) {
+                    showToast("Достигнут лимит Арт-директоров");
+                    viewMemberProfile(name);
+                    return;
+                }
+                m.role = 'ART';
+                m.title = 'Арт-директор';
+            } else if (m.role === 'ART') {
+                showToast("Дальше — только передача роли Владелицы");
+                viewMemberProfile(name);
+                return;
+            }
+            showToast("Роль повышена");
+            viewMemberProfile(name);
+        }
+
+        window.demoteMember = function (name) {
+            if (state.company.role !== 'CEO') {
+                showToast("Только Владелица может менять роли");
+                return;
+            }
+            const m = findMember(name);
+            if (!m) {
+                showToast("Участница не найдена");
+                return;
+            }
+            if (m.role === 'TRAINEE') {
+                showToast("Нельзя понизить ниже Стажёра");
+                return;
+            }
+            if (m.role === 'ART') {
+                m.role = 'TOP';
+                m.title = 'Топ-стилист';
+            } else if (m.role === 'TOP') {
+                m.role = 'TRAINEE';
+                m.title = 'Стажёр';
+            }
+            showToast("Роль понижена");
+            viewMemberProfile(name);
+        }
+
+        window.kickMember = function (name) {
+            if (state.company.role !== 'CEO') {
+                showToast("Только Владелица может исключать участниц");
+                return;
+            }
+            if (name === state.user) {
+                showToast("Нельзя исключить саму себя");
+                return;
+            }
+            const m = findMember(name);
+            if (!m) {
+                showToast("Участница не найдена");
+                return;
+            }
+            state.companyMembers = state.companyMembers.filter(x => x.name !== name);
+            showToast("Участница исключена");
+            backToCompanyFromMember();
+        }
+
+        // Работа с заявками в компанию (для Владелицы и Арт-директора)
+        function ensureCanReviewApplications() {
+            if (!(state.company.role === 'CEO' || state.company.role === 'ART')) {
+                showToast("У вас нет прав для работы с заявками");
+                return false;
+            }
+            return true;
+        }
+
+        window.acceptApplication = function (name) {
+            if (!ensureCanReviewApplications()) return;
+            const idx = state.companyApplications.findIndex(a => a.name === name);
+            if (idx === -1) {
+                showToast("Заявка не найдена");
+                return;
+            }
+            const app = state.companyApplications[idx];
+            // Добавляем новую участницу как стажёра
+            state.companyMembers.push({
+                name: app.name,
+                role: 'TRAINEE',
+                title: 'Стажёр',
+                online: false,
+                contribCoins: 0,
+                contribEnergy: 0,
+                corpPoints: 0,
+                reputationGiven: 0,
+                weeksInCompany: 0
+            });
+            state.companyApplications.splice(idx, 1);
+            showToast("Участница принята в компанию");
+            switchTab('company');
+        }
+
+        window.rejectApplication = function (name) {
+            if (!ensureCanReviewApplications()) return;
+            const before = state.companyApplications.length;
+            state.companyApplications = state.companyApplications.filter(a => a.name !== name);
+            if (state.companyApplications.length === before) {
+                showToast("Заявка не найдена");
+            } else {
+                showToast("Заявка отклонена");
+            }
+            switchTab('company');
+        }
+
+        // Передача роли Владелицы другой участнице
+        window.transferOwnership = function (name) {
+            if (state.company.role !== 'CEO') {
+                showToast("Только текущая Владелица может передать роль");
+                return;
+            }
+            if (name === state.user) {
+                showToast("Вы уже Владелица");
+                return;
+            }
+            const newCeo = findMember(name);
+            if (!newCeo) {
+                showToast("Участница не найдена");
+                return;
+            }
+            if (newCeo.role === 'CEO') {
+                showToast("Она уже Владелица");
+                return;
+            }
+
+            const oldCeo = findMember(state.user);
+            if (oldCeo) {
+                oldCeo.role = 'ART';
+                oldCeo.title = 'Арт-директор';
+            }
+
+            newCeo.role = 'CEO';
+            newCeo.title = 'Владелица';
+
+            state.company.role = 'ART'; // ваша новая роль в рамках компании
+
+            showToast("Роль Владелицы передана");
+            viewMemberProfile(name);
+        }
+
+        // Компания: Инвестиции
+        window.investCompany = function (deptId, cost, currency) {
+            let dept = state.company.departments.find(d => d.id === deptId);
+
+            if (currency === 'coins') {
+                if (state.coins >= cost) {
+                    state.coins -= cost;
+                    // Часть уходит в Кассу Дома (налог/пожертвование)
+                    const toTreasury = Math.floor(cost * 0.5);
+                    state.company.treasury += toTreasury;
+                    dept.progress += 10;
+
+                    // Игрок получает корпоративные очки за вклад
+                    state.company.corporatePoints += 5;
+
+                    showToast(`Вклад принят! +5 корп. очков`);
+                    updateQuest(2, 1);
+                } else {
+                    showToast("Недостаточно монет!"); return;
+                }
+            } else if (currency === 'energy') {
+                if (state.energy >= cost) {
+                    state.energy -= cost;
+                    dept.progress += 15;
+                    state.coins += 50; // Зарплата за работу
+                    addXP(10);
+                    // Небольшой вклад в репутацию за личную работу
+                    state.company.reputation += 1;
+                    state.company.corporatePoints += 2;
+                    showToast("Работа выполнена! +50 монет, +2 корп. очка");
+                } else {
+                    showToast("Недостаточно энергии!"); return;
+                }
+            }
+
+            if (dept.progress >= dept.max) {
+                dept.level++;
+                dept.progress = 0;
+                dept.max = Math.floor(dept.max * 1.2);
+                dept.income += 1; // Увеличиваем пассивный доход
+                // При повышении уровня отдела — рост репутации и XP игрока
+                state.company.reputation += 5;
+                showToast(`🎉 Отдел ${dept.name} повышен! Доход вырос, репутация Дома +5.`);
+                addXP(100);
+            }
+
+            updateUI();
+            switchTab('company');
+        }
+
+        // --- МОДАЛЬНЫЕ ОКНА И ФОРУМ ---
+
+        function showModal(title, text) {
+            document.getElementById('modalTitle').innerHTML = title;
+            document.getElementById('modalText').innerHTML = text;
+            document.getElementById('modal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Логика форума (оставлена как была, просто добавлена функция render)
+        function renderForum() {
+            const container = document.getElementById('content-area');
+            let html = `<div class="page-header"><i class="fas fa-comments"></i> Форум</div>`;
+
+            if (currentForumView.mode === "list") {
+                html += `
+                        <ul class="forum-list">
+                            ${forumDb.map(t => `
+                              <li class="forum-topic" onclick="openForumThread(${t.id})">
+                                <div class="forum-thread-title">${t.title}</div>
+                                <div style="display:flex; justify-content:space-between; font-size:11px; opacity:.7;">
+                                    <span>Автор: ${t.author}</span>
+                                    <span><i class="fas fa-comment-dots"></i> ${t.messages.length}</span>
+                                </div>
+                              </li>
+                            `).join('')}
+                        </ul>`;
+            } else if (currentForumView.mode === 'thread') {
+                let topic = forumDb.find(f => f.id === currentForumView.topicId);
+                html += `
+                            <div class="forum-back" onclick="closeForumThread()" style="margin-bottom:10px; cursor:pointer;"><i class="fa fa-arrow-left"></i> Назад</div>
+                            <div class="card" style="min-height: 400px; display:flex; flex-direction:column;">
+                              <div class="forum-thread-title" style="border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">${topic.title}</div>
+                              <div class="forum-messages" id="forumMessagesBox">
+                                ${topic.messages.map(msg => `
+                                  <div class="forum-message${msg.author === state.user ? " from-me" : ""}">
+                                     <div style="font-size:10px; opacity:0.7; margin-bottom:2px;">${msg.author}</div>
+                                     <div>${msg.text}</div>
+                                  </div>
+                                `).join('')}
+                              </div>
+                              <div style="margin-top:auto;">
+                                  <div style="display:flex; gap:5px;">
+                                    <input class="forum-input" id="forumMsgText" placeholder="Сообщение..." autocomplete="off">
+                                    <button class="btn-pink" style="border:none; border-radius:8px; width:40px;" onclick="sendForumMsg(${topic.id})"><i class="fas fa-paper-plane"></i></button>
+                                  </div>
+                              </div>
+                            </div>
+                        `;
+            }
+            container.innerHTML = html;
+            if (currentForumView.mode === 'thread') {
+                const box = document.getElementById('forumMessagesBox');
+                if (box) box.scrollTop = box.scrollHeight;
+            }
+        }
+
+        function openForumThread(id) { currentForumView.mode = 'thread'; currentForumView.topicId = id; renderForum(); }
+        function closeForumThread() { currentForumView.mode = 'list'; currentForumView.topicId = null; renderForum(); }
+        function sendForumMsg(id) {
+            let input = document.getElementById('forumMsgText');
+            if (input.value) {
+                let t = forumDb.find(f => f.id === id);
+                t.messages.push({ author: state.user, text: input.value });
+                input.value = '';
+                renderForum();
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.style.opacity = 1;
+            setTimeout(() => { toast.style.opacity = 0; }, 2000);
+        }
+
+        // Инициализация при старте
+        setTimeout(() => {
+            showModal("Ежедневный подарок", "Добро пожаловать назад!<br>Вам начислено: 200 💰 и 5 💎");
+            state.coins += 200;
+            state.diamonds += 5;
+            updateUI();
+        }, 1000);
+
+        updateUI();
+        switchTab('profile');
+
+    </script>
+</body>
+</html>
+
+
+
